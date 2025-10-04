@@ -2,7 +2,7 @@
   <div id="app">
     <nav>
       <!-- These should now render as clickable links -->
-      <router-link to="/">Home</router-link> |
+      <router-link to="/">Monitor</router-link> |
       <router-link to="/faq">FAQ</router-link>
     </nav>
 
