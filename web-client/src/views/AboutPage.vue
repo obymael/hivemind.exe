@@ -6,7 +6,7 @@
         <div class="copy">
             <h1>About Us</h1>
             <p>
-            We are <strong>Flower Power Tower Girls</strong> – a small but mighty team of three software engineers who came together for the NASA Space Apps Challenge 2025. Our project, <em>hivemind.exe</em>, was born from a shared love of bees and the rhythms of plants. Bees follow the pulse of flowers across ecosystems; with NASA Earth observations, we aim to help everyone witness that same pulse on Earth.
+            We are <strong>Flower Power Tower Girls</strong> – a small but mighty team of three software engineering students and a highschool student who came together for the NASA Space Apps Challenge 2025. Our project, <em>hivemind.exe</em>, was born from a shared love of bees and the rhythms of plants. Bees follow the pulse of flowers across ecosystems; with NASA Earth observations, we aim to help everyone witness that same pulse on Earth.
             </p>
 
             <p>
