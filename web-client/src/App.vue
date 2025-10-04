@@ -1,26 +1,19 @@
 <template>
-  <div id="app">
-    <nav>
-      <!-- These should now render as clickable links -->
-      <router-link to="/">Monitor</router-link> |
-      <router-link to="/faq">FAQ</router-link>
-    </nav>
-
-    <!-- Route content goes here -->
-    <router-view />
-  </div>
+  <SiteHeader :variant="variant" />
+  <RouterView />
 </template>
 
+<script setup>
+import { useRoute } from 'vue-router'
+import { computed } from 'vue'
+import SiteHeader from '@/components/SiteHeader.vue'
+
+const route = useRoute()
+const variant = computed(() => route.meta.headerVariant === 'home' ? 'home' : 'inner')
+</script>
+
 <style>
-nav {
-  background: #eee;
-  padding: 10px;
-}
-nav a {
-  margin: 0 10px;
-  text-decoration: none;
-}
-nav a.router-link-exact-active {
-  font-weight: bold;
-}
+/* optional: keep links from turning blue/purple */
+a { color: inherit; }
+html, body, #app { margin:0; padding:0; }
 </style>

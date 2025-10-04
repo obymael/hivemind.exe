@@ -1,15 +1,15 @@
 <template>
-  <!-- variant: 'home' (no logo) | 'inner' (logo left + centered links) -->
+  <!-- variant: 'home' (no logo) | 'inner' (logo + centered links) -->
   <header class="hdr" :class="variant">
-    <div class="row">
+    <div class="bar">
       <RouterLink
         v-if="variant==='inner'"
         to="/"
         class="brand"
         aria-label="hivemind.exe"
       >
-        <img :src="logoMark" alt="" />
-        <span class="sr-only">hivemind.exe</span>
+        <img :src="logoMark" alt="" class="brand__logo" />
+        <span class="brand__name">hivemind.exe</span>
       </RouterLink>
 
       <nav class="links" aria-label="Primary">
@@ -18,9 +18,6 @@
         <RouterLink to="/monitor" active-class="active">monitor</RouterLink>
         <RouterLink to="/contact" active-class="active">contact</RouterLink>
       </nav>
-
-      <!-- spacer to balance grid when brand is shown -->
-      <div v-if="variant==='inner'" class="spacer" />
     </div>
   </header>
 </template>
@@ -38,40 +35,51 @@ import logoMark from '@/assets/hivemind.exe_logo_white_bzz.png'
   width:100%;
 }
 
-/* 3-col grid so links stay perfectly CENTERED even with a brand on the left */
-.row{
-  max-width:1100px; margin:0 auto;
+/* center the links; position brand on the left so it doesn't push the nav */
+.bar{
+  max-width:1100px;
+  margin:0 auto;
   padding:14px 20px;
-  display:grid; grid-template-columns: 1fr auto 1fr; align-items:center;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 
-/* brand only rendered for inner pages */
-.brand{ display:inline-flex; align-items:center; }
-.brand img{ width:24px; height:24px; object-fit:contain; }
+/* brand (logo + name) */
+.brand{
+  position:absolute;
+  left:20px;
+  display:inline-flex;
+  align-items:center;
+  gap:10px;
+  text-decoration:none;
+}
+.brand__logo{ width:24px; height:24px; object-fit:contain; }
+.brand__name{
+  color:#e8f3ef;          /* white text next to logo */
+  font-weight:700;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  letter-spacing:.03em;
+  /* if you want black text instead: color:#0f1917; */
+}
 
-/* center nav */
+/* centered links */
 .links{
-  display:flex; gap:44px; justify-content:center; align-items:center;
+  display:flex;
+  gap:56px;
+  justify-content:center;
+  align-items:center;
   text-transform:lowercase;
   letter-spacing:.02em;
   font-weight:700;
-  /* Roundish feel like the mock: use system stack unless you add a webfont */
-  font-family: "Trebuchet MS", "Avenir", "Century Gothic", system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+  font-size:22px;
+  font-family: "Trebuchet MS","Avenir","Century Gothic",system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
 }
-.links a{
-  color:#f2fbf8; text-decoration:none;
-}
+.links a{ color:#f2fbf8; text-decoration:none; }
 .links a:hover{ text-decoration:underline; text-underline-offset:6px; }
 .active{ text-decoration:underline; text-underline-offset:6px; }
 
-/* when variant=home: hide brand column and bump spacing a touch */
-.hdr.home .row{ grid-template-columns: 1fr auto 1fr; padding:22px 20px 18px; }
-.hdr.home .links{ gap:56px; font-size:28px; }       /* big, like your sketch */
-.hdr.inner .links{ gap:36px; font-size:18px; }      /* slightly smaller inside */
-
-.sr-only{
-  position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden;
-  clip:rect(0,0,0,0); white-space:nowrap; border:0;
-}
-.spacer{ justify-self:end; }
+/* home variant: no brand (already handled by v-if), slightly taller top padding */
+.hdr.home .bar{ padding:22px 20px 18px; }
 </style>

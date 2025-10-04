@@ -1,6 +1,5 @@
 <template>
   <div class="page">
-    <NavBar />
     <main class="container">
       <section class="wrap">
         <div class="copy">
@@ -21,7 +20,7 @@
             <label class="full">
               <span>Message</span>
               <textarea v-model="form.msg" rows="6" required
-                placeholder="Tell us how you'd like to use BloomWatch…"></textarea>
+                placeholder="Tell us how you'd like to use hivemind.exe…"></textarea>
             </label>
 
             <button class="btn" type="submit">Send</button>
@@ -40,7 +39,6 @@
 
 <script setup>
 import { reactive } from 'vue'
-import NavBar from '@/components/NavBar.vue'
 import logo from '@/assets/hivemind.exe_logo.png'
 
 const form = reactive({ name:'', email:'', msg:'' })
@@ -77,8 +75,10 @@ function submit(){
 .card{
   background:#0f1917; color:#e8f3ef; border-radius:14px; padding:22px;
   box-shadow:0 10px 24px rgba(0,0,0,.12);
+  margin-top: 120px;       
+
 }
-.card img{ width:40px; height:auto; margin-bottom:10px; }
+.card img{ width:40px; height:auto; margin-bottom:30px; }
 .card a{ color:#b3ffea; }
 @media (max-width:900px){
   .wrap{ grid-template-columns:1fr; }
