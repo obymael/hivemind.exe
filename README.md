@@ -16,7 +16,7 @@ Your tool could:
     What decisions could your tool inform?
 
 
-# 🌸 BloomWatch - hivemind.exe
+# 🌸 hivemind.exe
 
 **An Earth Observation Application for Global Flowering Phenology**
 
@@ -29,11 +29,11 @@ Your tool could:
 
 ## 📖 About
 
-BloomWatch is a dynamic visual tool that harnesses NASA Earth observation data to monitor, detect, and visualize plant blooming events across the globe. From season to season and year to year, Earth's vegetation is constantly changing, providing critical information on plant species, crops, seasonal effects, pollen sources, and changes in plant phenology.
+hivemind.exe is a dynamic visual tool that harnesses NASA Earth observation data to monitor, detect, and visualize plant blooming events across the globe. From season to season and year to year, Earth's vegetation is constantly changing, providing critical information on plant species, crops, seasonal effects, pollen sources, and changes in plant phenology.
 
 ### The Challenge
 
-This project was created for the **2025 NASA Space Apps Challenge** to address the BloomWatch challenge: creating an application that displays and detects plant blooming events around the globe—just like pollinators do—and advances solutions for monitoring, predicting, or managing vegetation.
+This project was created for the **2025 NASA Space Apps Challenge** to address the hivemind.exe challenge: creating an application that displays and detects plant blooming events around the globe—just like pollinators do—and advances solutions for monitoring, predicting, or managing vegetation.
 
 ### Why It Matters
 
@@ -50,16 +50,10 @@ Tracking when, where, and how extensively plants bloom opens exciting possibilit
 
 ## 🛰️ Data Sources
 
-BloomWatch leverages NASA's powerful suite of satellites and airborne sensors:
+hivemind.exe leverages NASA's powerful suite of satellites and airborne sensors:
 
-- **EMIT** - Earth Surface Mineral Dust Source Investigation
-- **PACE** - Plankton, Aerosol, Cloud ocean Ecosystem mission
-- **AVIRIS** - Airborne Visible/Infrared Imaging Spectrometer
 - **Landsat** - Multispectral satellite imagery with extensive temporal archive
 - **MODIS** - Moderate Resolution Imaging Spectroradiometer
-- **VIIRS** - Visible Infrared Imaging Radiometer Suite
-
-These datasets provide unprecedented spectral, spatial, and temporal coverage for detecting bloom events worldwide.
 
 ---
 
@@ -79,7 +73,7 @@ These datasets provide unprecedented spectral, spatial, and temporal coverage fo
 
 ### Prerequisites
 
-Before installing BloomWatch, ensure you have the following installed:
+Before installing hivemind.exe, ensure you have the following installed:
 
 - **Node.js** (v16 or higher)
 - **npm** or **yarn**
@@ -143,12 +137,13 @@ npm run setup-data
 # Start the frontend development server
 npm run dev
 
-# In a separate terminal, start the backend (if applicable)
+# In a separate terminal, start the backend (if applicable) 
 cd backend
 python app.py
 ```
 
-The application will be available at `http://localhost:3000`
+The frontend will be available at `http://localhost:8080`
+The backend will be available at `http://localhost:5000`
 
 #### Option 2: Production Build
 
@@ -218,7 +213,7 @@ npm start
 
 ## Use Cases
 
-BloomWatch serves multiple stakeholder groups:
+hivemind.exe serves multiple stakeholder groups:
 
 - **Farmers & Agricultural Managers** - Optimize planting and harvest timing
 - **Conservation Organizations** - Monitor ecosystem health and invasive species
