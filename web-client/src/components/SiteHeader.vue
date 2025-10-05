@@ -16,6 +16,7 @@
         <RouterLink to="/" exact-active-class="active">home</RouterLink>
         <RouterLink to="/about" active-class="active">about</RouterLink>
         <RouterLink to="/monitor" active-class="active">monitor</RouterLink>
+        <RouterLink to="/my garden" active-class="active">my garden</RouterLink>
         <RouterLink to="/contact" active-class="active">contact</RouterLink>
       </nav>
     </div>

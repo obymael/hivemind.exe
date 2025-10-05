@@ -4,6 +4,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomePage from '../views/HomePage.vue'
 import AboutPage from '../views/AboutPage.vue'
 import MonitorPage from '../views/MonitorPage.vue'
+import MyGardenPage from '../views/MyGardenPage.vue'
 import ContactPage from '../views/ContactPage.vue'
 import FaqPage from '../views/FaqPage.vue'
 
@@ -11,6 +12,7 @@ const routes = [
   { path: '/',        component: HomePage,   meta: { headerVariant: 'home'  } },
   { path: '/about',   component: AboutPage,      meta: { headerVariant: 'inner' } },
   { path: '/monitor', component: MonitorPage,meta: { headerVariant: 'inner' } },
+  { path: '/mygarden', component: MyGardenPage,meta: { headerVariant: 'inner' } },
   { path: '/faq',     component: FaqPage,    meta: { headerVariant: 'inner' } },
   { path: '/contact', component: ContactPage,    meta: { headerVariant: 'inner' } },
 ]
