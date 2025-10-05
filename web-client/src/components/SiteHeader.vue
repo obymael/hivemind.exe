@@ -24,7 +24,9 @@
 </template>
 
 <script setup>
+// eslint-disable-next-line no-undef
 defineProps({ variant: { type: String, default: 'inner' } })
+
 import logoMark from '@/assets/hivemind.exe_logo_white_bzz.png'
 </script>
 
