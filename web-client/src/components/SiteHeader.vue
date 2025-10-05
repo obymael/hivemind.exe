@@ -15,7 +15,7 @@
       <nav class="links" aria-label="Primary">
         <RouterLink to="/" exact-active-class="active">home</RouterLink>
         <RouterLink to="/about" active-class="active">about</RouterLink>
-        <RouterLink to="/monitor" active-class="active">monitor</RouterLink>
+        <RouterLink to="/vegetation-index" active-class="active">monitor</RouterLink>
         <RouterLink to="/mygarden" active-class="active">my garden</RouterLink>
         <RouterLink to="/contact" active-class="active">contact</RouterLink>
       </nav>

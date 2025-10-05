@@ -3,9 +3,20 @@ from flask_cors import CORS
 import requests
 from datetime import datetime
 from functools import lru_cache
+import ee
+import numpy as np
+from sklearn.linear_model import LinearRegression
+
+# Initialize Earth Engine
+ee.Initialize()
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for Vue.js frontend
+
+
+# =========================
+# BloomData API
+# =========================
 
 class BloomDataAPI:
     """Real-time API for Swedish pollinator plant bloom data"""
@@ -167,18 +178,75 @@ class BloomDataAPI:
 # Initialize API handler
 bloom_api = BloomDataAPI()
 
+# =========================
+# NDVI API Integration
+# =========================
+def fetch_ndvi_for_year(year, region):
+    ndvi_collection = ee.ImageCollection("NOAA/CDR/VIIRS/NDVI/V1") \
+                        .filterDate(f'{year}-01-01', f'{year}-12-31') \
+                        .select("NDVI")
+    ndvi_image = ndvi_collection.mean().clip(region)
+    ndvi_array = ndvi_image.sample(region, scale=10000).getInfo()
+    
+    points = []
+    for feat in ndvi_array['features']:
+        coords = feat['geometry']['coordinates']
+        points.append({"lon": coords[0], "lat": coords[1], "ndvi": feat['properties']['NDVI']})
+    return points
+
+def predict_ndvi_trend(region, target_year):
+    historical_years = list(range(2014, 2026))
+    mean_ndvi_years = []
+    for y in historical_years:
+        img = ee.ImageCollection("NOAA/CDR/VIIRS/NDVI/V1") \
+                .filterDate(f'{y}-01-01', f'{y}-12-31').select("NDVI").mean().clip(region)
+        val = img.reduceRegion(ee.Reducer.mean(), region).getInfo()['NDVI']
+        mean_ndvi_years.append(val if val is not None else np.nan)
+    
+    X = np.array([y for y, v in zip(historical_years, mean_ndvi_years) if v is not None]).reshape(-1, 1)
+    y_vals = np.array([v for v in mean_ndvi_years if v is not None])
+    model = LinearRegression().fit(X, y_vals)
+    predicted = float(model.predict(np.array([[target_year]]))[0])
+    return predicted, np.nanmean(mean_ndvi_years)
+
+# =========================
+# Flask Routes
+# =========================
 @app.route('/')
 def home():
     return jsonify({
-        "service": "PolliBloom API",
-        "version": "1.0",
-        "description": "Real-time Swedish pollinator plant bloom data",
+        "service": "PolliBloom + NDVI API",
+        "version": "1.1",
+        "description": "Real-time Swedish pollinator bloom data and NDVI maps",
         "endpoints": {
             "/api/plants": "Get all plants with live data",
             "/api/plant/<name>": "Get specific plant data",
             "/api/calendar": "Get bloom calendar view",
-            "/api/gaps": "Analyze bloom gaps for pollinator support"
+            "/api/gaps": "Analyze bloom gaps for pollinator support",
+            "/api/ndvi?year=&bbox=": "Get NDVI points and predicted trend"
         }
+    })
+
+@app.route('/api/ndvi')
+def get_ndvi():
+    year = int(request.args.get("year", 2025))
+    bbox = request.args.get("bbox")
+    if bbox:
+        minLon, minLat, maxLon, maxLat = map(float, bbox.split(","))
+        region = ee.Geometry.Rectangle([minLon, minLat, maxLon, maxLat])
+    else:
+        region = ee.Geometry.Rectangle([11.0, 55.0, 24.0, 69.0])  # Sweden approx
+
+    points = fetch_ndvi_for_year(year, region)
+    predicted_ndvi, mean_ndvi = predict_ndvi_trend(region, year)
+    
+    return jsonify({
+        "year": year,
+        "bbox": bbox or "Sweden approx",
+        "ndvi_points": points[:500],
+        "mean_ndvi": mean_ndvi,
+        "predicted_ndvi": predicted_ndvi,
+        "timestamp": datetime.now().isoformat()
     })
 
 @app.route('/api/plants')
@@ -281,7 +349,7 @@ def analyze_gaps():
         "timestamp": datetime.now().isoformat()
     })
 
-if __name__ == '__main__':
-    print("🌸 PolliBloom API Server Starting...")
-    print("📡 Fetching real-time data from GBIF and iNaturalist...")
+if __name__ == "__main__":
+    print("🌸 Bloom Data API + NDVI API Server Starting...")
+    print("📡 Fetching real-time data from GBIF, iNaturalist, and Earth Engine...")
     app.run(debug=True, port=5000)
