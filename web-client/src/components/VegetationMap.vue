@@ -1,16 +1,8 @@
+/**
+Parts of this code were enhanced with the help of generative AI
+*/
 <template>
   <div class="pollen-map-container">
-    <!-- Header -->
-    <div class="header">
-      <div class="header-content">
-        <div class="header-title">
-          <span class="icon">🌿</span>
-          <h1>Global Vegetation Monitor</h1>
-        </div>
-        <p class="subtitle">Track NOAA VIIRS NDVI changes from 2014–2025</p>
-      </div>
-    </div>
-
     <div class="main-content">
       <!-- Map Container -->
       <div ref="mapContainer" class="map"></div>
@@ -34,7 +26,7 @@
           </div>
           <input
             type="range"
-            min="2014"
+            min="2020"
             max="2025"
             step="1"
             v-model.number="selectedYear"
@@ -58,141 +50,9 @@
             <button @click="showInfo = false" class="close-btn">✕</button>
           </div>
           <ul>
-            <li><strong>Slider:</strong> Drag to view NDVI for different years (2014-2025)</li>
-            <li><strong>Click:</strong> Click anywhere to analyze vegetation at that location</li>
+            <li><strong>Slider:</strong> Drag to view NDVI for different years (2020-2025)</li>
             <li><strong>Data:</strong> NOAA VIIRS NDVI V1 via NASA GIBS</li>
           </ul>
-        </div>
-
-        <!-- Location Analysis -->
-        <div v-if="clickedLocation" class="analysis-results">
-          <h3 class="results-header">
-            Location Analysis
-          </h3>
-
-          <div v-if="clickedLocation.loading" class="loading">
-            <div class="spinner"></div>
-            <p>Analyzing location...</p>
-          </div>
-
-          <div v-else-if="!clickedLocation.error">
-            <div class="result-item">
-              <div class="label">Coordinates</div>
-              <div class="value coords">{{ clickedLocation.lat }}, {{ clickedLocation.lng }}</div>
-            </div>
-
-            <div class="result-item">
-              <div class="label">NDVI Value</div>
-              <div class="value ndvi-value">{{ clickedLocation.ndvi }}</div>
-            </div>
-
-            <div class="result-item">
-              <div class="label">Biome Type</div>
-              <div class="value biome">{{ clickedLocation.biome }}</div>
-            </div>
-
-            <div class="result-item">
-              <div class="label">Elevation</div>
-              <div class="value">{{ clickedLocation.elevation }}m</div>
-            </div>
-
-            <div class="result-item">
-              <div class="label">Vegetation Status</div>
-              <div :class="['badge', 'veg-' + clickedLocation.category.toLowerCase().replace(/\s/g, '-')]">
-                {{ clickedLocation.category }}
-              </div>
-            </div>
-
-            <div class="result-item">
-              <div class="label">Description</div>
-              <div class="value status">{{ clickedLocation.vegetation }}</div>
-            </div>
-
-            <div v-if="clickedLocation.climate" class="climate-section">
-              <h4 class="subsection-title">Climate Factors</h4>
-              <div class="climate-grid">
-                <div class="climate-item">
-                  <span class="climate-icon">🌡️</span>
-                  <span class="climate-label">Avg Temp:</span>
-                  <span class="climate-value">{{ clickedLocation.climate.avgTemp.toFixed(1) }}°C</span>
-                </div>
-                <div class="climate-item">
-                  <span class="climate-icon">🌧️</span>
-                  <span class="climate-label">Precipitation:</span>
-                  <span class="climate-value">{{ Math.round(clickedLocation.climate.totalPrecip) }}mm/yr</span>
-                </div>
-              </div>
-            </div>
-
-            <div v-if="clickedLocation.factors" class="factors-section">
-              <h4 class="subsection-title">NDVI Factors</h4>
-              <div class="factor-bars">
-                <div class="factor-bar">
-                  <div class="factor-label">Seasonal</div>
-                  <div class="bar-container">
-                    <div class="bar-fill" :style="{ width: (clickedLocation.factors.seasonal * 100) + '%' }"></div>
-                  </div>
-                  <div class="factor-value">{{ (clickedLocation.factors.seasonal * 100).toFixed(0) }}%</div>
-                </div>
-                <div class="factor-bar">
-                  <div class="factor-label">Elevation</div>
-                  <div class="bar-container">
-                    <div class="bar-fill" :style="{ width: (clickedLocation.factors.elevation * 100) + '%' }"></div>
-                  </div>
-                  <div class="factor-value">{{ (clickedLocation.factors.elevation * 100).toFixed(0) }}%</div>
-                </div>
-                <div class="factor-bar">
-                  <div class="factor-label">Temperature</div>
-                  <div class="bar-container">
-                    <div class="bar-fill" :style="{ width: (clickedLocation.factors.temperature * 100) + '%' }"></div>
-                  </div>
-                  <div class="factor-value">{{ (clickedLocation.factors.temperature * 100).toFixed(0) }}%</div>
-                </div>
-                <div class="factor-bar">
-                  <div class="factor-label">Precipitation</div>
-                  <div class="bar-container">
-                    <div class="bar-fill" :style="{ width: (clickedLocation.factors.precipitation * 100) + '%' }"></div>
-                  </div>
-                  <div class="factor-value">{{ (clickedLocation.factors.precipitation * 100).toFixed(0) }}%</div>
-                </div>
-              </div>
-            </div>
-
-            <div v-if="clickedLocation.pollinatorPlants && clickedLocation.pollinatorPlants.length > 0" class="pollinator-section">
-              <h4 class="subsection-title">🌸 Swedish Pollinator Plants (Blooming Now)</h4>
-              <div class="plant-list">
-                <div v-for="plant in clickedLocation.pollinatorPlants" :key="plant.id" class="plant-item">
-                  <div class="plant-color" :style="{ backgroundColor: plant.color }"></div>
-                  <div class="plant-info">
-                    <div class="plant-name">{{ plant.commonName }}</div>
-                    <div class="plant-sci">{{ plant.scientificName }}</div>
-                  </div>
-                </div>
-              </div>
-              <div class="plant-note">Data: GBIF + iNaturalist</div>
-            </div>
-
-            <div v-if="clickedLocation.trend" class="trend-info">
-              <h4 class="subsection-title">Historical Trend & Projection</h4>
-              <div class="trend-text">{{ clickedLocation.trend.text }}</div>
-              <div class="trend-stats">
-                <div class="stat-item">
-                  <span class="stat-label">Total Change:</span>
-                  <span :class="['stat-value', clickedLocation.trend.changePercent > 0 ? 'positive' : 'negative']">
-                    {{ clickedLocation.trend.changePercent > 0 ? '+' : '' }}{{ clickedLocation.trend.changePercent.toFixed(1) }}%
-                  </span>
-                </div>
-                <div class="stat-item">
-                  <span class="stat-label">2030 Projection:</span>
-                  <span class="stat-value">{{ clickedLocation.trend.prediction2030.toFixed(3) }}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div v-else class="error-message">
-            {{ clickedLocation.error }}
-          </div>
         </div>
 
         <!-- NDVI Legend -->
@@ -223,9 +83,7 @@ export default {
     return {
       map: null,
       activeLayer: "satellite",
-      selectedYear: 2020,
-      comparisonYear: 2015,
-      comparisonMode: false,
+      selectedYear: 2025,
       clickedLocation: null,
       showInfo: false,
       layers: {},
@@ -267,44 +125,44 @@ export default {
     },
 
     async fetchNDVILayer() {
-      try {
-        const bounds = this.map.getBounds();
-        const bboxStr = `${bounds.getWest()},${bounds.getSouth()},${bounds.getEast()},${bounds.getNorth()}`;
-        const res = await fetch(`http://localhost:5001/api/ndvi?year=${this.selectedYear}&bbox=${bboxStr}`);
-        const data = await res.json();
-        if (this.layers.ndviHeat) this.map.removeLayer(this.layers.ndviHeat);
+  try {
+    // Remove existing NDVI layer
+    if (this.layers.ndviLayer) {
+      this.map.removeLayer(this.layers.ndviLayer);
+      this.layers.ndviLayer = null;
+    }
 
-        const heatPoints = data.ndvi_points.map(p => [p.lat, p.lon, p.ndvi]);
-        const heatLayer = L.heatLayer(heatPoints, { radius: 25, blur: 15, maxZoom: 10 }).addTo(this.map);
-        this.layers.ndviHeat = heatLayer;
-      } catch (err) {
-        console.error("Failed to fetch NDVI:", err);
-      }
-    },
+    // Map your NDVI GeoTIFFs by year
+    const tifMap = {
+      2020: "http://localhost:8000/cog/tiles/{z}/{x}/{y}.png?url=file://server/NDVI_2020_global.tif",
+      2021: "http://localhost:8000/cog/tiles/{z}/{x}/{y}.png?url=file://server/NDVI_2021_global.tif",
+      2022: "http://localhost:8000/cog/tiles/{z}/{x}/{y}.png?url=file://server/NDVI_2022_global.tif",
+      2023: "http://localhost:8000/cog/tiles/{z}/{x}/{y}.png?url=file://server/NDVI_2023_global.tif",
+      2024: "http://localhost:8000/cog/tiles/{z}/{x}/{y}.png?url=file://server/NDVI_2024_global.tif",
+      2025: "http://localhost:8000/cog/tiles/{z}/{x}/{y}.png?url=file:///home/julia/Desktop/nasa-2025/hivemind.exe/server/NDVI_2025_global.tif",
+    };
 
-    toggleComparison() {
-      this.comparisonMode = !this.comparisonMode;
-      if (this.comparisonMode) {
-        this.updateComparison();
-      } else {
-        this.updateLayers();
-      }
-    },
+    const ndviUrl = tifMap[this.selectedYear];
+    if (!ndviUrl) return;
 
-    updateComparison() {
-      if (!this.comparisonMode) return;
-      Object.values(this.layers).forEach(layer => { if (this.map.hasLayer(layer)) this.map.removeLayer(layer); });
-      // Comparison left/right could be implemented here if needed
-      this.fetchNDVILayer();
-    },
+    const ndviLayer = L.tileLayer(ndviUrl, {
+      opacity: 0.7,
+      attribution: "NOAA VIIRS NDVI",
+      tileSize: 256,
+      tms: false,
+    });
+
+    ndviLayer.addTo(this.map);
+    this.layers.ndviLayer = ndviLayer;
+
+  } catch (err) {
+    console.error("Error adding NDVI layer:", err);
+  }
+},
 
     updateYearLayer() {
-      if (this.comparisonMode) {
-        this.updateComparison();
-      } else {
         this.updateLayers();
         this.fetchNDVILayer();
-      }
     },
 
     async analyzeLocation(lat, lng) {
@@ -370,7 +228,6 @@ export default {
 
     setLayer(layerName) {
       this.activeLayer = layerName;
-      this.comparisonMode = false;
       this.updateLayers();
     },
 
@@ -417,10 +274,6 @@ export default {
 .year-slider::-moz-range-thumb { width:20px; height:20px; border-radius:50%; background:#fff; cursor:pointer; border: 3px solid #059669; box-shadow: 0 2px 6px rgba(0,0,0,0.2);}
 .year-display { text-align: center; }
 .year-label { font-weight: 600; color:#1f2937; font-size: 1.125rem; margin-bottom: 0.25rem; }
-.comparison-btn { width: 100%; padding: 0.625rem 1rem; background: #eff6ff; border: 2px solid #3b82f6; color: #1e40af; border-radius: 0.5rem; cursor: pointer; font-weight: 600; transition: all 0.2s; font-size: 0.875rem; }
-.comparison-btn:hover { background: #dbeafe; }
-.comparison-controls { margin-top: 0.75rem; }
-.comparison-label { display: block; font-size: 0.875rem; color: #374151; font-weight: 500; }
 .year-select { width: 100%; margin-top: 0.5rem; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-size: 0.875rem; cursor: pointer; }
 .info-btn { width: 100%; padding: 0.625rem 1rem; background: #dbeafe; border: none; border-radius: 0.5rem; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-weight: 500; transition: all 0.2s; margin-bottom: 1rem; color: #1e40af; }
 .info-btn:hover { background: #bfdbfe; }

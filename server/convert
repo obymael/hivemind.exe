@@ -1,0 +1,14 @@
+import xarray as xr
+import rioxarray
+
+input_nc = "VIIRS-Land_v001_JP113C1_NOAA-20_20230928_c20240124055607.nc"
+output_tif = "NDVI_2023_global.tif"
+
+ds = xr.open_dataset(input_nc)
+ndvi = ds['NDVI']  
+
+ndvi.rio.write_crs("EPSG:4326", inplace=True)
+
+ndvi.rio.to_raster(output_tif)
+
+print("Saved:", output_tif)
