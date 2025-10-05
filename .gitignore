@@ -5,7 +5,6 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
-package-lock.json
 yarn.lock
 .pnpm-debug.log
 
@@ -14,6 +13,8 @@ dist/
 build/
 .cache/
 .tmp/
+*.manifest
+*.spec  # PyInstaller spec files
 
 # --- Logs ---
 *.log
@@ -21,6 +22,30 @@ logs/
 *.out
 *.pid
 *.gz
+
+# --- Python ---
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+.venv/
+*.egg-info/
+*.egg
+*.pyo
+*.pyd
+
+# --- Flask / Backend ---
+instance/
+flask_session/
+*.db
+*.sqlite3
+*.sqlite
+tmp/
+temp/
+
+# --- Executables ---
+*.exe
 
 # --- IDEs & Editors ---
 .vscode/
@@ -52,13 +77,20 @@ $RECYCLE.BIN/
 .env
 .env.local
 .env.*.local
+.envrc
+secrets.json
+config.json
 
 # --- Coverage reports ---
 coverage/
 .nyc_output/
 
-# --- Misc ---
+# --- Archives / Misc ---
 *.tgz
 *.zip
 *.tar.gz
 *.rar
+
+# --- Optional Data / Exports ---
+data/
+exports/
